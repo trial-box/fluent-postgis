@@ -76,5 +76,5 @@ extension GeometricGeometryCollection2D: GeometryConvertible, GeometryCollectabl
 }
 
 extension GeometricGeometryCollection2D: PostGISDataType {
-    static var dataType: DatabaseSchema.DataType { return PostGISDataTypeList.geographicGeometryCollection }
+    static var dataType: DatabaseSchema.DataType { return PostGISDataTypeList.geometricGeometryCollection }
 }
