@@ -1,7 +1,8 @@
 import XCTest
+import FluentKit
 import FluentBenchmark
 import FluentPostgresDriver
-import FluentKit
+import PostgresKit
 import Foundation
 @testable import FluentPostGIS
 
@@ -13,23 +14,26 @@ final class QueryTests: XCTestCase {
     }
     var dbs: Databases!
     var conn: Database {
+<<<<<<< HEAD
         self.benchmarker.database
     }
     var db: Database {
+=======
+>>>>>>> 789cfa4... Finish tests refactor
         self.benchmarker.database
     }
     var postgres: PostgresDatabase {
-        self.db as! PostgresDatabase
+        self.conn as! PostgresDatabase
     }
-    
+
     override func setUp() {
         let configuration = PostgresConfiguration(
             hostname: "localhost",
-            username: "postgres",
-            password: "postgres",
+            username: "fluentpostgis",
+            password: "fluentpostgis",
             database: "postgis_tests"
         )
-        
+
         self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         self.threadPool = NIOThreadPool(numberOfThreads: 1)
         self.dbs = Databases(threadPool: threadPool, on: self.eventLoopGroup)
@@ -37,6 +41,28 @@ final class QueryTests: XCTestCase {
     }
     
     func testContains() throws {
+<<<<<<< HEAD
+=======
+        final class UserArea: Model {
+            static let schema = "user_area"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+        
+>>>>>>> 789cfa4... Finish tests refactor
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
@@ -54,10 +80,36 @@ final class QueryTests: XCTestCase {
         
         let testPoint = GeometricPoint2D(x: 5, y: 5)
         let all = try UserArea.query(on: conn).filterGeometryContains(\.$area, testPoint).all().wait()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 789cfa4... Finish tests refactor
         XCTAssertEqual(all.count, 1)
     }
     
     func testContainsReversed() throws {
+<<<<<<< HEAD
+=======
+        final class UserLocation: Model {
+            static let schema = "user_location"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "location")
+            var location: GeometricPoint2D
+        }
+        struct UserLocationMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("location", GeometricPoint2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema).delete()
+            }
+        }
+
+>>>>>>> 789cfa4... Finish tests refactor
         try UserLocationMigration().prepare(on: conn).wait()
         defer { try! UserLocationMigration().revert(on: conn).wait() }
 
@@ -79,6 +131,28 @@ final class QueryTests: XCTestCase {
     }
 
     func testContainsWithHole() throws {
+<<<<<<< HEAD
+=======
+        final class UserArea: Model {
+            static let schema = "user_area"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+>>>>>>> 789cfa4... Finish tests refactor
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
 
@@ -110,9 +184,34 @@ final class QueryTests: XCTestCase {
     }
 
     func testCrosses() throws {
+<<<<<<< HEAD
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
+=======
+        final class UserArea: Model {
+            static let schema = "user_area"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+        try UserAreaMigration().prepare(on: conn).wait()
+        defer { try! UserAreaMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 10, y: 0),
@@ -124,7 +223,11 @@ final class QueryTests: XCTestCase {
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 15, y: 0),
             GeometricPoint2D(x: 5, y: 5)
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let user = UserArea()
         user.area = polygon
@@ -135,8 +238,32 @@ final class QueryTests: XCTestCase {
     }
 
     func testCrossesReversed() throws {
+<<<<<<< HEAD
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
+=======
+        final class UserLocation: Model {
+            static let schema = "user_location"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserLocationMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema).delete()
+            }
+        }
+
+        try UserLocationMigration().prepare(on: conn).wait()
+        defer { try! UserLocationMigration().revert(on: conn).wait() }
+>>>>>>> 789cfa4... Finish tests refactor
 
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
@@ -149,6 +276,7 @@ final class QueryTests: XCTestCase {
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 15, y: 0),
             GeometricPoint2D(x: 5, y: 5)
+<<<<<<< HEAD
             ])
 
         let user = UserPath()
@@ -156,13 +284,47 @@ final class QueryTests: XCTestCase {
         _ = try user.save(on: conn).wait()
 
         let all = try UserPath.query(on: conn).filterGeometryCrosses(polygon, \.$path).all().wait()
+=======
+        ])
+
+        let user = UserLocation()
+        user.path = testPath
+        _ = try user.save(on: conn).wait()
+
+        let all = try UserLocation.query(on: conn).filterGeometryCrosses(polygon, \.$path).all().wait()
+>>>>>>> 789cfa4... Finish tests refactor
         XCTAssertEqual(all.count, 1)
     }
 
     func testDisjoint() throws {
+<<<<<<< HEAD
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
+=======
+        final class UserArea: Model {
+            static let schema = "user_area"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+        try UserAreaMigration().prepare(on: conn).wait()
+        defer { try! UserAreaMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 10, y: 0),
@@ -174,7 +336,11 @@ final class QueryTests: XCTestCase {
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 15, y: 0),
             GeometricPoint2D(x: 11, y: 5)
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let user = UserArea()
         user.area = polygon
@@ -185,8 +351,32 @@ final class QueryTests: XCTestCase {
     }
 
     func testDisjointReversed() throws {
+<<<<<<< HEAD
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
+=======
+        final class UserLocation: Model {
+            static let schema = "user_location"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserLocationMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema).delete()
+            }
+        }
+
+        try UserLocationMigration().prepare(on: conn).wait()
+        defer { try! UserLocationMigration().revert(on: conn).wait() }
+>>>>>>> 789cfa4... Finish tests refactor
 
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
@@ -199,6 +389,7 @@ final class QueryTests: XCTestCase {
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 15, y: 0),
             GeometricPoint2D(x: 11, y: 5)
+<<<<<<< HEAD
             ])
 
         let user = UserPath()
@@ -206,13 +397,47 @@ final class QueryTests: XCTestCase {
         _ = try user.save(on: conn).wait()
 
         let all = try UserPath.query(on: conn).filterGeometryDisjoint(polygon, \.$path).all().wait()
+=======
+        ])
+
+        let user = UserLocation()
+        user.path = testPath
+        _ = try user.save(on: conn).wait()
+
+        let all = try UserLocation.query(on: conn).filterGeometryDisjoint(polygon, \.$path).all().wait()
+>>>>>>> 789cfa4... Finish tests refactor
         XCTAssertEqual(all.count, 1)
     }
 
     func testEquals() throws {
+<<<<<<< HEAD
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
+=======
+        final class UserArea: Model {
+            static let schema = "user_area"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+        try UserAreaMigration().prepare(on: conn).wait()
+        defer { try! UserAreaMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 10, y: 0),
@@ -230,9 +455,34 @@ final class QueryTests: XCTestCase {
     }
 
     func testIntersects() throws {
+<<<<<<< HEAD
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
+=======
+        final class UserArea: Model {
+            static let schema = "user_area"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+        try UserAreaMigration().prepare(on: conn).wait()
+        defer { try! UserAreaMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 10, y: 0),
@@ -244,7 +494,11 @@ final class QueryTests: XCTestCase {
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 15, y: 0),
             GeometricPoint2D(x: 5, y: 5)
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let user = UserArea()
         user.area = polygon
@@ -255,8 +509,32 @@ final class QueryTests: XCTestCase {
     }
 
     func testIntersectsReversed() throws {
+<<<<<<< HEAD
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
+=======
+        final class UserLocation: Model {
+            static let schema = "user_location"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserLocationMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserLocation.schema).delete()
+            }
+        }
+
+        try UserLocationMigration().prepare(on: conn).wait()
+        defer { try! UserLocationMigration().revert(on: conn).wait() }
+>>>>>>> 789cfa4... Finish tests refactor
 
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
@@ -269,6 +547,7 @@ final class QueryTests: XCTestCase {
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 15, y: 0),
             GeometricPoint2D(x: 5, y: 5)
+<<<<<<< HEAD
             ])
 
         let user = UserPath()
@@ -276,10 +555,41 @@ final class QueryTests: XCTestCase {
         _ = try user.save(on: conn).wait()
 
         let all = try UserPath.query(on: conn).filterGeometryIntersects(polygon, \.$path).all().wait()
+=======
+        ])
+
+        let user = UserLocation()
+        user.path = testPath
+        _ = try user.save(on: conn).wait()
+
+        let all = try UserLocation.query(on: conn).filterGeometryIntersects(polygon, \.$path).all().wait()
+>>>>>>> 789cfa4... Finish tests refactor
         XCTAssertEqual(all.count, 1)
     }
 
     func testOverlaps() throws {
+<<<<<<< HEAD
+=======
+        final class UserPath: Model {
+            static let schema = "user_path"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserPathMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema).delete()
+            }
+        }
+
+>>>>>>> 789cfa4... Finish tests refactor
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
 
@@ -288,14 +598,22 @@ final class QueryTests: XCTestCase {
             GeometricPoint2D(x: 5, y: 5),
             GeometricPoint2D(x: 6, y: 6),
             GeometricPoint2D(x: 0, y: 0),
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let testPath2 = GeometricLineString2D(points: [
             GeometricPoint2D(x: 16, y: 0),
             GeometricPoint2D(x: 5, y: 5),
             GeometricPoint2D(x: 6, y: 6),
             GeometricPoint2D(x: 2, y: 0),
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let user = UserPath()
         user.path = testPath
@@ -306,6 +624,28 @@ final class QueryTests: XCTestCase {
     }
 
     func testOverlapsReversed() throws {
+<<<<<<< HEAD
+=======
+        final class UserPath: Model {
+            static let schema = "user_path"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserPathMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema).delete()
+            }
+        }
+
+>>>>>>> 789cfa4... Finish tests refactor
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
 
@@ -314,14 +654,22 @@ final class QueryTests: XCTestCase {
             GeometricPoint2D(x: 5, y: 5),
             GeometricPoint2D(x: 6, y: 6),
             GeometricPoint2D(x: 0, y: 0),
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let testPath2 = GeometricLineString2D(points: [
             GeometricPoint2D(x: 16, y: 0),
             GeometricPoint2D(x: 5, y: 5),
             GeometricPoint2D(x: 6, y: 6),
             GeometricPoint2D(x: 2, y: 0),
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let user = UserPath()
         user.path = testPath
@@ -332,14 +680,43 @@ final class QueryTests: XCTestCase {
     }
 
     func testTouches() throws {
+<<<<<<< HEAD
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
         
+=======
+        final class UserPath: Model {
+            static let schema = "user_path"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserPathMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema).delete()
+            }
+        }
+
+        try UserPathMigration().prepare(on: conn).wait()
+        defer { try! UserPathMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 1, y: 1),
             GeometricPoint2D(x: 0, y: 2)
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let testPoint = GeometricPoint2D(x: 0, y: 2)
 
@@ -352,14 +729,43 @@ final class QueryTests: XCTestCase {
     }
 
     func testTouchesReversed() throws {
+<<<<<<< HEAD
         try UserPathMigration().prepare(on: conn).wait()
         defer { try! UserPathMigration().revert(on: conn).wait() }
         
+=======
+        final class UserPath: Model {
+            static let schema = "user_path"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "path")
+            var path: GeometricLineString2D
+        }
+        struct UserPathMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("path", GeometricLineString2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserPath.schema).delete()
+            }
+        }
+
+        try UserPathMigration().prepare(on: conn).wait()
+        defer { try! UserPathMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let testPath = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 1, y: 1),
             GeometricPoint2D(x: 0, y: 2)
+<<<<<<< HEAD
             ])
+=======
+        ])
+>>>>>>> 789cfa4... Finish tests refactor
 
         let testPoint = GeometricPoint2D(x: 0, y: 2)
 
@@ -372,9 +778,34 @@ final class QueryTests: XCTestCase {
     }
 
     func testWithin() throws {
+<<<<<<< HEAD
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
+=======
+        final class UserArea: Model {
+            static let schema = "user_path"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+        try UserAreaMigration().prepare(on: conn).wait()
+        defer { try! UserAreaMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 10, y: 0),
@@ -399,9 +830,34 @@ final class QueryTests: XCTestCase {
     }
 
     func testWithinReversed() throws {
+<<<<<<< HEAD
         try UserAreaMigration().prepare(on: conn).wait()
         defer { try! UserAreaMigration().revert(on: conn).wait() }
         
+=======
+        final class UserArea: Model {
+            static let schema = "user_path"
+            @ID(custom: "id", generatedBy: .database)
+            var id: Int?
+            @Field(key: "area")
+            var area: GeometricPolygon2D
+        }
+        struct UserAreaMigration: Migration {
+            func prepare(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema)
+                    .field("id", .int, .identifier(auto: true))
+                    .field("area", GeometricPolygon2D.dataType)
+                    .create()
+            }
+            func revert(on database: Database) -> EventLoopFuture<Void> {
+                return database.schema(UserArea.schema).delete()
+            }
+        }
+
+        try UserAreaMigration().prepare(on: conn).wait()
+        defer { try! UserAreaMigration().revert(on: conn).wait() }
+
+>>>>>>> 789cfa4... Finish tests refactor
         let exteriorRing = GeometricLineString2D(points: [
             GeometricPoint2D(x: 0, y: 0),
             GeometricPoint2D(x: 10, y: 0),

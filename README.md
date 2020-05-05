@@ -1,6 +1,5 @@
 # FluentPostGIS
 
-[![Build Status](https://travis-ci.org/plarson/fluent-postgis.svg?branch=master)](https://travis-ci.org/plarson/fluent-postgis)
 ![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20OS%20X-blue.svg)
 ![Package Managers](https://img.shields.io/badge/package%20managers-SwiftPM-yellow.svg)
 [![Twitter rabc](https://img.shields.io/badge/twitter-rabc-green.svg)](http://twitter.com/rabc)
