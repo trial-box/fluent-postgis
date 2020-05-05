@@ -14,7 +14,7 @@ extension QueryBuilder {
 
 extension QueryBuilder {
     public func queryFilterGeometryDistance(_ path: String, _ filter: SQLExpression,
-                                                   _ method: SQLBinaryOperator, _ value: SQLExpression) -> Self {
+                                            _ method: SQLBinaryOperator, _ value: SQLExpression) -> Self {
         query.filters.append(.sql(SQLFunction("ST_Distance", args: [SQLColumn(path), filter]),
                                   method, value))
         return self
