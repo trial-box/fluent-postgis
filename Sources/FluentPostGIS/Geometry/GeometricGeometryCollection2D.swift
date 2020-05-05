@@ -49,19 +49,6 @@ extension GeometricGeometryCollection2D: GeometryConvertible, GeometryCollectabl
         return self.geometry
     }
     
-    public init(from decoder: Decoder) throws {
-        let value = try decoder.singleValueContainer().decode(String.self)
-        let geometry: GeometryCollection = try WKTDecoder().decode(from: value)
-        self.init(geometry: geometry)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        let wktEncoder = WKTEncoder()
-        let value = wktEncoder.encode(geometry)
-        var container = encoder.singleValueContainer()
-        try container.encode(value)
-    }
-    
     public static func == (lhs: GeometricGeometryCollection2D, rhs: GeometricGeometryCollection2D) -> Bool {
         guard lhs.geometries.count == rhs.geometries.count else {
             return false
