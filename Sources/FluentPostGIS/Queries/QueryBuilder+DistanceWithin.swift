@@ -18,17 +18,3 @@ extension QueryBuilder {
         return self
     }
 }
-
-extension QueryBuilder {
-    func applyFilter(function: String, args: [SQLExpression]) {
-        query.filters.append(.custom(SQLFunction(function, args: args)))
-    }
-    
-    func applyFilter(function: String, path: String, value: SQLExpression) {
-        applyFilter(function: function, args: [SQLColumn(path), value])
-    }
-    
-    func applyFilter(function: String, value: SQLExpression, path: String) {
-        applyFilter(function: function, args: [value, SQLColumn(path)])
-    }
-}
