@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "FluentPostGIS",
+    name: "fluent-postgis",
     platforms: [
        .macOS(.v10_15)
     ],
