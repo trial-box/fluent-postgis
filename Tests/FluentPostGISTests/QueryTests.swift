@@ -9,12 +9,12 @@ import Foundation
 final class QueryTests: XCTestCase {
     var eventLoopGroup: EventLoopGroup!
     var threadPool: NIOThreadPool!
-    var benchmarker: FluentBenchmarker {
-        return .init(databases: self.dbs)
-    }
     var dbs: Databases!
     var conn: Database {
-        self.benchmarker.database
+        self.dbs.database(
+            logger: .init(label: "lib.fluent.postgis"),
+            on: self.dbs.eventLoopGroup.next()
+        )!
     }
     var postgres: PostgresDatabase {
         self.conn as! PostgresDatabase

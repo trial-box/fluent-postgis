@@ -14,7 +14,7 @@ extension QueryBuilder {
     /// - returns: Query builder for chaining.
     @discardableResult
     public func filterGeometryTouches<F, V>(_ field: KeyPath<Model, F>, _ value: V) -> Self
-        where F: FieldProtocol, V: GeometryConvertible
+        where F: QueryableProperty, V: GeometryConvertible
     {
         
         return queryGeometryTouches(QueryBuilder.path(field),
@@ -33,7 +33,7 @@ extension QueryBuilder {
     /// - returns: Query builder for chaining.
     @discardableResult
     public func filterGeometryTouches<F, V>(_ value: V, _ field: KeyPath<Model, F>) -> Self
-        where F: FieldProtocol, V: GeometryConvertible
+        where F: QueryableProperty, V: GeometryConvertible
     {
         return queryGeometryTouches(QueryBuilder.queryExpressionGeometry(value),
                                     QueryBuilder.path(field))
