@@ -1,11 +1,11 @@
 import FluentKit
 import SQLKit
 
-protocol PostGISDataType {
+public protocol PostGISDataType {
     static var dataType: DatabaseSchema.DataType { get }
 }
 
-struct PostGISDataTypeList {
+public struct PostGISDataTypeList {
     static var geometricPoint: DatabaseSchema.DataType {
         return .custom(SQLRaw("geometry(Point, \(FluentPostGISSrid))"))
     }
@@ -63,7 +63,7 @@ struct PostGISDataTypeList {
     }
 }
 
-extension SchemaBuilder {
+public extension SchemaBuilder {
     func field(
         _ name: String,
         _ type: PostGISDataType.Type,

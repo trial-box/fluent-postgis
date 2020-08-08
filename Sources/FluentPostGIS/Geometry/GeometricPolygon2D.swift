@@ -42,5 +42,5 @@ extension GeometricPolygon2D: GeometryConvertible, GeometryCollectable {
 }
 
 extension GeometricPolygon2D: PostGISDataType {
-    static var dataType: DatabaseSchema.DataType { return PostGISDataTypeList.geometricPolygon }
+    public static var dataType: DatabaseSchema.DataType { return PostGISDataTypeList.geometricPolygon }
 }
