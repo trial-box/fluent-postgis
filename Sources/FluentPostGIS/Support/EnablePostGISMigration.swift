@@ -8,6 +8,8 @@ public struct EnablePostGISMigration: Migration {
     enum EnablePostGISMigrationError: Error {
         case notSqlDatabase
     }
+    
+    public init() { }
 
     public func prepare(on database: Database) -> EventLoopFuture<Void> {
         guard let db = database as? SQLDatabase else {
