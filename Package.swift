@@ -16,9 +16,10 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-kit.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/postgres-nio.git", from: "1.1.0"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
+        .package(url: "https://github.com/vapor/fluent.git", from: "4.3.1"),
 
         // Well Known Binary Encoding and Decoding
-        .package(url: "https://github.com/rabc/WKCodable", from: "0.1.0"),
+        .package(url: "https://github.com/plarson/WKCodable", from: "0.1.1"),
     ],
     targets: [
         .target(

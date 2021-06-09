@@ -11,7 +11,7 @@ PostGIS support for [fluent-postgres-driver](https://github.com/vapor/fluent-pos
 ## Swift Package Manager
 
 ```swift
-.package(url: "https://github.com/rabc/fluent-postgis.git", .branch("vapor_4"))
+.package(url: "https://github.com/rafaellevy/fluent-postgis.git", .branch("master"))
 ```
 # Setup
 Import module
