@@ -12,6 +12,39 @@ extension QueryBuilder {
         //return filterGeometryDistanceWithin(Database.queryField(.keyPath(key)), Database.queryFilterValueGeometry(filter),  Database.queryFilterValue([value]))
     }
     
+    @discardableResult
+    public func filterGeometryDistanceWithin<Joined, Field, V>(
+        _ joined: Joined.Type,
+        _ field: KeyPath<Joined, Field>,
+        _ filter: V,
+        _ value: Double
+    ) -> Self
+        where Joined: Schema, Field: QueryableProperty, V: GeometryConvertible, Field.Model == Joined
+    {
+
+        return queryFilterGeometryDistanceWithin(
+            .path(
+                Joined.path(for: field), schema: Joined.schemaOrAlias),
+            QueryBuilder.queryExpressionGeometry(filter),
+            SQLLiteral.numeric(String(value)))
+    }
+    
+    @discardableResult
+    public func filterGeographyDistanceWithin<Joined, Field, V>(
+        _ joined: Joined.Type,
+        _ field: KeyPath<Joined, Field>,
+        _ filter: V,
+        _ value: Double
+    ) -> Self
+        where Joined: Schema, Field: QueryableProperty, V: GeometryConvertible, Field.Model == Joined
+    {
+
+        return queryFilterGeographyDistanceWithin(
+            .path(
+                Joined.path(for: field), schema: Joined.schemaOrAlias),
+            QueryBuilder.queryExpressionGeometry(filter),
+            SQLLiteral.numeric(String(value)))
+    }
   
     
     @discardableResult
@@ -33,6 +66,11 @@ extension QueryBuilder {
         applyFilter(function: "ST_DWithin", args: [SQLColumn(field), filter, value])
         return self
     }
+    
+    func queryFilterGeometryDistanceWithin(_ field: DatabaseQuery.Field, _ filter: SQLExpression, _ value: SQLExpression) -> Self {
+        applyFilter(function: "ST_DWithin", args: [SQLColumn(field.description), filter, value])
+        return self
+    }
 }
 
 //extension QuerySupporting where QueryFilterValue: SQLExpression {
@@ -45,6 +83,11 @@ extension QueryBuilder {
 extension QueryBuilder {
     func queryFilterGeographyDistanceWithin(_ field: String, _ filter: SQLExpression, _ value: SQLExpression) -> Self {
         applyFilter(function: "ST_DWithin", args: [SQLColumn(field), filter, value])
+        return self
+    }
+    
+    func queryFilterGeographyDistanceWithin(_ field: DatabaseQuery.Field, _ filter: SQLExpression, _ value: SQLExpression) -> Self {
+        applyFilter(function: "ST_DWithin", args: [SQLColumn(field.description), filter, value])
         return self
     }
     
