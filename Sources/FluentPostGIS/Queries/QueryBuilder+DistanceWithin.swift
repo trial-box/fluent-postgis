@@ -42,7 +42,7 @@ extension QueryBuilder {
         return queryFilterGeographyDistanceWithin(
             .path(
                 Joined.path(for: field), schema: Joined.schemaOrAlias),
-            QueryBuilder.queryExpressionGeometry(filter),
+            QueryBuilder.queryExpressionGeography(filter),
             SQLLiteral.numeric(String(value)))
     }
   
@@ -52,7 +52,7 @@ extension QueryBuilder {
         where F: QueryableProperty, V: GeometryConvertible
     {
         return queryFilterGeographyDistanceWithin(QueryBuilder.path(field),
-                                                 QueryBuilder.queryExpressionGeometry(filter),
+                                                 QueryBuilder.queryExpressionGeography(filter),
                                                  SQLLiteral.numeric(String(value)))
         //return filterGeographyDistanceWithin(Database.queryField(.keyPath(key)), Database.queryFilterValueGeographic(filter),  Database.queryFilterValue([value]))
     }
@@ -82,12 +82,20 @@ extension QueryBuilder {
 
 extension QueryBuilder {
     func queryFilterGeographyDistanceWithin(_ field: String, _ filter: SQLExpression, _ value: SQLExpression) -> Self {
-        applyFilter(function: "ST_DWithin", args: [SQLColumn(field), filter, value])
+        let field: SQLExpression = SQLRaw(field)
+        applyFilter(function: "ST_DWithin", args: [field, filter, value])
         return self
     }
     
     func queryFilterGeographyDistanceWithin(_ field: DatabaseQuery.Field, _ filter: SQLExpression, _ value: SQLExpression) -> Self {
-        applyFilter(function: "ST_DWithin", args: [SQLColumn(field.description), filter, value])
+        let fieldExpression: String
+        switch field {
+        case .custom(_):
+            fieldExpression = field.description
+        case .path(let keys, let schema):
+            fieldExpression = "\"\(schema)\".\"\(keys.first!)\""
+        }
+        applyFilter(function: "ST_DWithin", args: [SQLRaw(fieldExpression), filter, value])
         return self
     }
     

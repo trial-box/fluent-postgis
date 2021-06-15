@@ -7,6 +7,11 @@ extension QueryBuilder {
         return SQLFunction("ST_GeomFromEWKT", args: [SQLLiteral.string(geometryText)])
     }
     
+    static func queryExpressionGeography<T: GeometryConvertible>(_ geometry: T) -> SQLExpression {
+        let geometryText = WKTEncoder().encode(geometry.geometry)
+        return SQLLiteral.string(geometryText)
+    }
+    
 //    private static func key(_ key: FieldKey) -> String {
 //        switch key {
 //        case .id:
@@ -36,3 +41,8 @@ extension QueryBuilder {
         applyFilter(function: function, args: [value, SQLColumn(path)])
     }
 }
+
+// *ask* - work out which is the correct SRID
+// ST_DWithin(b.geom,'SRID=3857;POINT(3072163.4 7159374.1)',                     4000)
+// ST_DWithin("addresses."coordinate", 'SRID=4326;Point(38.824972 -104.340629)', 5000.0)
+
