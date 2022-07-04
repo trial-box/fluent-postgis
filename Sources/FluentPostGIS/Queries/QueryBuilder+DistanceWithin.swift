@@ -94,11 +94,10 @@ extension QueryBuilder {
             fieldExpression = field.description
         case .path(let keys, let schema):
             fieldExpression = "\"\(schema)\".\"\(keys.first!)\""
+        case .extendedPath(let keys, let schema, _):
+            fieldExpression = "\"\(schema)\".\"\(keys.first!)\""
         }
         applyFilter(function: "ST_DWithin", args: [SQLRaw(fieldExpression), filter, value])
         return self
     }
-    
-   
 }
-
